@@ -1,0 +1,13 @@
+package presenter
+
+type User struct {
+	ID       string
+	Name     string
+	Email    string
+	Password string
+}
+
+type Login struct{
+	Email    string
+	Password string
+}
