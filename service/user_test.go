@@ -3,6 +3,7 @@ package service
 import(
 	"testing"
 	"app/domain"
+	"app/repository"
 	"context"
 	//"fmt"
 	"github.com/golang/mock/gomock"

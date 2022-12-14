@@ -2,31 +2,27 @@ package controllers
 
 import (
 	"app/domain"
+	"app/repository"
+	//"app/service"
 	//"app/repository"
 	//"app/presenter"
-	"net/http"
 	"errors"
-	"context"
+	"net/http"
+
+	//"context"
 	"github.com/gin-gonic/gin"
 	validator "github.com/go-playground/validator/v10"
 )
 
-type UserControllers interface {
-/* 	CreateUser(c *gin.Context)
-	GetIDUser(c *gin.Context) */
-	CreateUser(context.Context, domain.User)(domain.User, error)
-	ReadID(context.Context, string, domain.User)(domain.User, error)
+type UserController struct{
+	repository repository.UserRepository
 }
 
-type UserControllerService struct{
-	repository UserControllers
+func NewUserController(repository repository.UserRepository) *UserController{
+	return &UserController{repository: repository}
 }
 
-func NewUserControllerService (repository UserControllers) *UserControllerService{
-	return &UserControllerService{repository: repository}
-}
-
-func (uc UserControllerService) CreateUser(c *gin.Context) {
+func (uc UserController) Create(c *gin.Context) {
 	var u domain.User
 	//var user presenter.User
 	var ve validator.ValidationErrors
@@ -42,7 +38,7 @@ func (uc UserControllerService) CreateUser(c *gin.Context) {
 		}
 		return
 	}
-	user, err := uc.repository.CreateUser(c ,u) //passar para present --> present.user, err := repository.Create(c, u)
+	user, err := uc.repository.Create(c, u) //passar para present --> present.user, err := repository.Create(c, u)
 	if  err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"erro ao criar dado na struct domain.User": err.Error()})
@@ -51,12 +47,12 @@ func (uc UserControllerService) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, user)
 }
 
-func  (uc UserControllerService) GetIDUser(c *gin.Context) {
+func  (uc UserController) GetID(c *gin.Context) {
 	var u domain.User
 	//var user presenter.User
 
 	givenID := c.Params.ByName("id")
-	user, err := uc.repository.ReadID(c, givenID, u)//desta forma que passa a função?
+	user, err := uc.repository.GetID(c, givenID, u)
 	if  err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"erro ao extrair dado da struct User": err.Error()})

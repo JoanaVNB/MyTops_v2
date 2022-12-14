@@ -3,16 +3,17 @@ package repository
 import (
 	"app/domain"
 	//"app/presenter"
+	//"app/service"
 	"context"
 	"cloud.google.com/go/firestore"
 	"fmt"
-	"github.com/google/uuid"
+	//"github.com/google/uuid"
 	"google.golang.org/api/iterator"
 )
 
-type UserFirebase interface{
-	CreateUser(context.Context, domain.User)(domain.User, error)
-	ReadID(context.Context, string, domain.User)(domain.User, error)
+type DB interface{
+	Create(context.Context, domain.User) (domain.User, error)
+	GetID(context.Context, string, domain.User) (domain.User, error)
 }
 
 type Firebase struct{
@@ -20,10 +21,10 @@ type Firebase struct{
 }
 
 func NewFirebaseRepository(client firestore.Client) *Firebase{
-	return &Firebase{client : client}//retorna o valor para struct Firebase --> com valor atribuido na main
+	return &Firebase{client : client}
 }
 
-func (f Firebase) EmailRegistered(c context.Context, email string) (bool) {
+func EmailRegistered(f Firebase, c context.Context, email string) (bool) {
 	usersCollection := f.client.Collection("Users")
 
 	iter := usersCollection.Where("email", "==", email).Documents(c)
@@ -44,13 +45,13 @@ func (f Firebase) EmailRegistered(c context.Context, email string) (bool) {
 	return false
 }	
 
-func (f Firebase) CreateUser(c context.Context, u domain.User) (user domain.User, err error){
+func (f Firebase) Create(c context.Context, u domain.User) (user domain.User, err error){
 	usersCollection := f.client.Collection("Users")
 	
-	if f.EmailRegistered(c, u.Email) == false{
-			u.ID = uuid.NewString()
-			//service.UserUseCase.Create(c,u)
-		_, err= usersCollection.Doc(u.ID).Create(c, u)
+	if EmailRegistered(f, c, u.Email) == false{
+			//u.ID = uuid.NewString()
+			//service.UserRepository.Create(c, u) PQ NÃO FUNCIONA?
+			_, err= usersCollection.Doc(u.ID).Create(c, u)
 		if err != nil{
 			return u, err
 			}
@@ -59,11 +60,10 @@ func (f Firebase) CreateUser(c context.Context, u domain.User) (user domain.User
 	return u, nil
 }
 
-//context errado?
-func (f Firebase) ReadID(c context.Context, id string, u domain.User) (user domain.User, err error){
+func (f Firebase) GetID(c context.Context, id string, u domain.User) (user domain.User, err error){
 	usersCollection := f.client.Collection("Users")
 
-	doc, err := usersCollection.Doc(id).Get(c)//talvez GET esteja errado
+	doc, err := usersCollection.Doc(id).Get(c)
 	if err != nil {
 		return user, err
 	}

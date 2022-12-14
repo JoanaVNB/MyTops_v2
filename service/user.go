@@ -6,36 +6,27 @@ import (
 	"github.com/google/uuid"
 	"context"
 	"app/domain"
+	"app/repository"
 )
 
-type UserServiceRepository interface {
-	Create (context.Context, domain.User) error
-	GetID (context.Context, string, domain.User) (domain.User, error)
-}
-
 type UserService struct {
-	repository UserServiceRepository
+	repository repository.UserRepository
 }
 
-func NewUserUseCase (repository UserServiceRepository) *UserService{
+func NewUserService (repository repository.UserRepository) *UserService{
 	return &UserService{repository: repository}
 }
 
-func (user UserService) Create (ctx context.Context, u domain.User) (domain.User, error){
+func (us UserService) Create(ctx context.Context, u domain.User) (user domain.User, err error){
 	u.ID = uuid.NewString()
-
-	err := user.repository.Create(ctx, u)
-	if err != nil{
-		return domain.User{}, err
-	}
-	return u, nil
+	us.repository.Create(ctx,u)
+	return u, err
 }
 
-func (user UserService) GetID (ctx context.Context, id string, u domain.User)(domain.User, error){
-
-	u, err := user.repository.GetID(ctx, id, u)
+func (us UserService) GetID(ctx context.Context, id string, u domain.User)(user domain.User, err error){
+	user, err = us.repository.GetID(ctx, id, u)
 	if err != nil{
-		return domain.User{}, err
+		return user, err
 	}
-	return u, nil
+	return user, nil
 }
