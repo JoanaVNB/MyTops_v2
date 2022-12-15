@@ -3,13 +3,9 @@ package controllers
 import (
 	"app/domain"
 	"app/repository"
-	//"app/service"
-	//"app/repository"
-	//"app/presenter"
+	"app/presenters"
 	"errors"
 	"net/http"
-
-	//"context"
 	"github.com/gin-gonic/gin"
 	validator "github.com/go-playground/validator/v10"
 )
@@ -24,7 +20,6 @@ func NewUserController(repository repository.UserRepository) *UserController{
 
 func (uc UserController) Create(c *gin.Context) {
 	var u domain.User
-	//var user presenter.User
 	var ve validator.ValidationErrors
 	
 	if err := c.ShouldBindJSON(&u); err != nil {
@@ -38,25 +33,29 @@ func (uc UserController) Create(c *gin.Context) {
 		}
 		return
 	}
-	user, err := uc.repository.Create(c, u) //passar para present --> present.user, err := repository.Create(c, u)
+	user, err := uc.repository.Create(c, u)
+	presenterUser := *presenters.PresenterUser(user)
 	if  err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"erro ao criar dado na struct domain.User": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, user)
+	if user.Name == ""{//se campo retornou vazio, é pq não foi cadastrado
+		c.JSON(http.StatusBadRequest, "Usuário não foi cadastrado.")
+		return
+	}
+	c.JSON(http.StatusCreated, presenterUser)
 }
 
 func  (uc UserController) GetID(c *gin.Context) {
 	var u domain.User
-	//var user presenter.User
 
 	givenID := c.Params.ByName("id")
 	user, err := uc.repository.GetID(c, givenID, u)
 	if  err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"erro ao extrair dado da struct User": err.Error()})
+		c.JSON(http.StatusBadRequest, "ID não encontrado")
 		return
 	}
-	c.JSON(http.StatusOK, user)
+	presenterUser := *presenters.PresenterUser(user)
+	c.JSON(http.StatusOK, &presenterUser)
 }
