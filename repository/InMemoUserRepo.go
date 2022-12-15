@@ -13,9 +13,9 @@ func NewInMemoUserRepository() *InMemoUserRepository{
 	return &InMemoUserRepository{u: make(map[string]domain.User)}
 }
 
-func (in InMemoUserRepository) Create(ctx context.Context, u domain.User) error{
+func (in InMemoUserRepository) Create(c context.Context, u domain.User) (domain.User, error){
 	in.u[u.ID] = u
-	return nil
+	return u,  nil
 }
 
 func (in InMemoUserRepository) GetID(ctx context.Context, id string, u domain.User) (domain.User, error){

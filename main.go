@@ -32,6 +32,7 @@ func main(){
 	r := gin.Default()
 		r.POST("/user", userControllers.Create)
 		r.GET("/user/:id", userControllers.GetID)
+		r.POST("/login", userControllers.Login)
 	
 	r.Run(":5500")
 }

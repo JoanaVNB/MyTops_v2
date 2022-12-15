@@ -59,3 +59,22 @@ func  (uc UserController) GetID(c *gin.Context) {
 	presenterUser := *presenters.PresenterUser(user)
 	c.JSON(http.StatusOK, &presenterUser)
 }
+
+func (uc UserController) Login(c *gin.Context){
+	var u domain.User
+	var l domain.Login
+
+	if err := c.ShouldBindJSON(&l); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"erro ao extrair dado da struct Login": err.Error()})
+			return
+	}
+	
+	bol, _ := uc.repository.Login(c, u, l)
+	if bol == true{
+		c.JSON(http.StatusAccepted,  "Usuário autorizado")
+	}
+	if bol == false{
+		c.JSON(http.StatusBadRequest, "Senha incorreta")	
+	}
+}

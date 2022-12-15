@@ -8,8 +8,9 @@ import (
 	"github.com/google/uuid"
 )
 type UserRepository interface {
-	Create (context.Context, domain.User) (domain.User, error)
-	GetID (context.Context, string, domain.User) (domain.User, error)
+	Create(context.Context, domain.User) (domain.User, error)
+	GetID(context.Context, string, domain.User) (domain.User, error)
+	Login(context.Context, domain.User, domain.Login) bool
 } 
 
 type UserService struct {
@@ -48,4 +49,8 @@ func (us UserService) GetID(ctx context.Context, id string, u domain.User)(domai
 		return user, err
 	}
 	return user, nil
+}
+
+func (us UserService) Login(c context.Context, u domain.User, l domain.Login) bool{
+	return us.repository.Login(c, u, l)
 }

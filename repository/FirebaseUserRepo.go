@@ -62,3 +62,27 @@ func (f Firebase) GetID(c context.Context, id string, u domain.User) (domain.Use
 	}
 	return u, nil
 }
+
+func (f Firebase) Login(c context.Context, u domain.User, l domain.Login) bool{
+	usersCollection := f.client.Collection("Users")	
+
+	iter := usersCollection.Where("email", "==", l.Email).Documents(c)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done{
+			break
+		}
+		if err != nil{
+			fmt.Println(err)
+		}
+	
+		if err := doc.DataTo(&u); err != nil {
+			fmt.Println(err)
+		}
+	}
+
+	if u.Password != l.Password{
+		return false
+	}
+	return true
+}

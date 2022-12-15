@@ -64,3 +64,17 @@ func (mr *MockUserRepositoryMockRecorder) GetID(arg0, arg1, arg2 interface{}) *g
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetID", reflect.TypeOf((*MockUserRepository)(nil).GetID), arg0, arg1, arg2)
 }
+
+// Login mocks base method.
+func (m *MockUserRepository) Login(arg0 context.Context, arg1 domain.User, arg2 domain.Login) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Login", arg0, arg1, arg2)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// Login indicates an expected call of Login.
+func (mr *MockUserRepositoryMockRecorder) Login(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockUserRepository)(nil).Login), arg0, arg1, arg2)
+}

@@ -70,3 +70,31 @@ func TestUserUseCase_GetidUser_GoMockAndTestify(t *testing.T){
 	assert.Exactly(t, "Joana", gotUser.Name)
 	assert.Exactly(t, "joanavidon@gmail.com", gotUser.Email)
 }
+
+//ESTÁ ERRADO
+func TestUserUseCase_Login_GoMockAndTestify(t *testing.T){
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	mockRepository :=  NewMockUserRepository(controller)
+
+	mockRepository.
+		EXPECT().
+		Login(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(false).
+		Times(1)
+
+	UserServiceMock := NewUserService(mockRepository)
+
+	UserServiceMock.Login(context.Background(), 
+	domain.User{
+		Email: "joanavidon@gmail.com",
+		Password: "jo123",
+		},
+	domain.Login{
+		Email: "joanavidon@gmail.com",
+		Password: "jo1234",
+		})
+
+	//assert.Exactly(t, true, loginUser)
+}
