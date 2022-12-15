@@ -30,7 +30,6 @@ func main(){
 
 //Conectando ao Gin
 	r := gin.Default()
-	
 		r.POST("/user", userControllers.Create)
 		r.GET("/user/:id", userControllers.GetID)
 	

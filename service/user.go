@@ -28,10 +28,12 @@ func validate(u domain.User) bool{
 	return true
 }
 
+//Create retorna user apenas para verificar se foi criado ou não, pois se foi criado irá retornar com valores, caso não tenha sido criado, irá retornar vazio
 func (us UserService) Create(ctx context.Context, u domain.User) (domain.User, error){
 	if validate(u) == true {
 		u.ID = uuid.NewString()
 		user, err := us.repository.Create(ctx,u)
+		user.ID = u.ID
 		if err != nil{
 			return user, err
 		}

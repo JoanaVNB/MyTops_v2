@@ -38,7 +38,7 @@ func TestUserUseCase_CreateUser_GoMockAndTestify(t *testing.T){
 
 	assert.Exactly(t, "Joana", createdUser.Name)
 	assert.Exactly(t, "joanavidon@gmail.com", createdUser.Email)
-	//assert.Exactly(t, "joanavidon@gmail.com", createdUser.ID)
+	assert.Exactly(t, "jo123", createdUser.Password)
 	assert.NotEmpty(t, createdUser.ID)
 	assert.Nil(t, err)
 }
