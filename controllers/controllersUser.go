@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"app/domain"
-	"app/repository"
+	"context"
 	"app/presenters"
 	"errors"
 	"net/http"
@@ -10,11 +10,17 @@ import (
 	validator "github.com/go-playground/validator/v10"
 )
 
+type UserRepository interface {
+	Create(c context.Context, u domain.User) (domain.User, error)
+	GetID(context.Context, string, domain.User) (domain.User, error)
+	Login(context.Context, domain.User, domain.Login) bool
+} 
+
 type UserController struct{
-	repository repository.UserRepository
+	repository UserRepository
 }
 
-func NewUserController(repository repository.UserRepository) *UserController{
+func NewUserController(repository UserRepository) *UserController{
 	return &UserController{repository: repository}
 }
 
@@ -70,7 +76,7 @@ func (uc UserController) Login(c *gin.Context){
 			return
 	}
 	
-	bol, _ := uc.repository.Login(c, u, l)
+	bol := uc.repository.Login(c, u, l)
 	if bol == true{
 		c.JSON(http.StatusAccepted,  "Usuário autorizado")
 	}

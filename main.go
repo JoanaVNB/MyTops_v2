@@ -5,7 +5,7 @@ import(
 	"context"
 	"cloud.google.com/go/firestore"
 	"log"
-	"app/repository"
+	"app/repository/Firebase"
 	"app/controllers"
 	"app/service"
 	"github.com/gin-gonic/gin"
@@ -27,12 +27,20 @@ func main(){
 //Services
 	userService := service.NewUserService(firebaseRepository)// atribui a qual repo os services devem se conectar
 	userControllers := controllers.NewUserController(userService) //injetar o userService
+	shopService := service.NewShopService(firebaseRepository)
+	shopControllers := controllers.NewShopController(shopService)
 
 //Conectando ao Gin
 	r := gin.Default()
+
+//User
 		r.POST("/user", userControllers.Create)
 		r.GET("/user/:id", userControllers.GetID)
 		r.POST("/login", userControllers.Login)
-	
+
+//Shop
+		r.POST("/shop", shopControllers.CreateShop)
+
+
 	r.Run(":5500")
 }

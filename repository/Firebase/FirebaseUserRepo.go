@@ -4,19 +4,13 @@ import (
 	"app/domain"
 	"context"
 	"fmt"
-	"cloud.google.com/go/firestore"
+	//"cloud.google.com/go/firestore"
 	"google.golang.org/api/iterator"
 )
 
-type Firebase struct{
-	client	firestore.Client
-}
 
-func NewFirebaseRepository(client firestore.Client) *Firebase{
-	return &Firebase{client : client}
-}
 
-func EmailRegistered(f Firebase, c context.Context, email string) (bool) {
+func emailRegistered(f Firebase, c context.Context, email string) (bool) {
 	usersCollection := f.client.Collection("Users")
 
 	iter := usersCollection.Where("email", "==", email).Documents(c)
@@ -40,7 +34,7 @@ func EmailRegistered(f Firebase, c context.Context, email string) (bool) {
 func (f Firebase) Create(c context.Context, u domain.User) (domain.User, error){
 	usersCollection := f.client.Collection("Users")
 	
-	if EmailRegistered(f, c, u.Email) == false{
+	if emailRegistered(f, c, u.Email) == false{
 			_, err := usersCollection.Doc(u.ID).Create(c, u)
 			if err != nil{
 				return u, err
@@ -86,3 +80,4 @@ func (f Firebase) Login(c context.Context, u domain.User, l domain.Login) bool{
 	}
 	return true
 }
+
