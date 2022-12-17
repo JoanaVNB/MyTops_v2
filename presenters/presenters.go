@@ -24,7 +24,6 @@ func PresenterUser(u domain.User) *User{
 }
 
 type Shop struct {
-	ID      string  
 	Name    string  
 	Flavors [6]string 
 	Score   float64 
@@ -38,12 +37,11 @@ type NameUpdated struct{
 }
 
 type PriceUpdated struct{
-	NewPrice	float64	
+	NewPrice	float64
 }
 
 func PresenterShop(s domain.Shop) *Shop{
 	return &Shop{
-		ID: s.ID,
 		Name: s.Name,
 		Flavors: s.Flavors,
 		Score: s.Score,
