@@ -4,7 +4,7 @@ API para dar nota aos seus restaurantes favoritos ou até aqueles que você nunc
 
 `FAIL` Os teste de Update não estão corretos :(
 
-Abaixo segue minha visão do clean archicteture:
+## Abaixo segue minha visão do clean archicteture:
 ![image](https://user-images.githubusercontent.com/98241492/209588324-ae03b527-1b5e-43d7-8806-548631127087.png)
 
 ## Meus resumos sobre alguns temas estudados:
