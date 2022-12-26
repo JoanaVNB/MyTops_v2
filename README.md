@@ -1,8 +1,7 @@
 # MyTops
 
 API para dar nota aos seus restaurantes favoritos, ou até aqueles que você nunca mais quer ir!
-  Este projeto contém muitas funções que servem apenas para fim didáticos.
-
+  
 Abaixo segue minha visão do clean archicteture:
 ![image](https://user-images.githubusercontent.com/98241492/209586928-c862ecc1-0439-4ccc-b44d-639d01857e0a.png)
 
