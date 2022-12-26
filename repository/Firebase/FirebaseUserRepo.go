@@ -4,11 +4,8 @@ import (
 	"app/domain"
 	"context"
 	"fmt"
-	//"cloud.google.com/go/firestore"
 	"google.golang.org/api/iterator"
 )
-
-
 
 func emailRegistered(f Firebase, c context.Context, email string) (bool) {
 	usersCollection := f.client.Collection("Users")
@@ -49,10 +46,10 @@ func (f Firebase) GetID(c context.Context, id string, u domain.User) (domain.Use
 
 	doc, err := usersCollection.Doc(id).Get(c)
 	if err != nil {
-		return u, err
+		return domain.User{}, err
 	}
 	if err := doc.DataTo(&u); err != nil {
-			return u, err
+			return domain.User{}, err
 	}
 	return u, nil
 }

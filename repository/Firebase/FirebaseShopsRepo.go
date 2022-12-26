@@ -3,18 +3,9 @@ package repository
 import (
 	"context"
 	"app/domain"
-//	"log"
-	//"net/http"
-	//"os"
-	//"strconv"
 	"cloud.google.com/go/firestore"
-
 	"google.golang.org/api/iterator"
-	//"github.com/google/uuid"
-	//"errors"
-	//"github.com/go-playground/validator/v10"
 	"fmt"
-	//"sort"
 )
 
 func nameRegistered(f Firebase, c context.Context, name string) bool{
@@ -38,7 +29,7 @@ func nameRegistered(f Firebase, c context.Context, name string) bool{
 		return false
 }	
 
-func (f Firebase) CreateShop (c context.Context, s domain.Shop) (domain.Shop, error){
+func (f Firebase) CreateShop(c context.Context, s domain.Shop) (domain.Shop, error){
 	shopCollection := f.client.Collection("Shops")
 
 	if nameRegistered(f, c, s.Name) == false{
@@ -73,7 +64,6 @@ func (f Firebase) GetAll(c context.Context, s domain.Shop) ([]domain.Shop, error
 	return docs, nil
 }
 
-
 func (f Firebase) GetByID(c context.Context, id string, s domain.Shop) (domain.Shop, error){
 	shopCollection := f.client.Collection("Shops")
 
@@ -83,7 +73,7 @@ func (f Firebase) GetByID(c context.Context, id string, s domain.Shop) (domain.S
 	}
 
 	if err := doc.DataTo(&s); err != nil {
-		return s, err
+		return domain.Shop{}, err
 	}
 	s.ID = doc.Ref.ID
 	return s, nil
@@ -103,7 +93,7 @@ func (f Firebase) GetByName(c context.Context, name string, s domain.Shop) (doma
 			return domain.Shop{}, err
 		}
 		docum = doc
-	}		
+	}
 	if err := docum.DataTo(&s); err != nil {
 		return domain.Shop{}, err
 	}
@@ -152,24 +142,6 @@ func (f Firebase) GetByPrice(c context.Context, price float64, s domain.Shop) ([
 	return docs, nil
 }
 
-func (f Firebase) GetByScorePrice(c context.Context, score float64, price float64, s domain.Shop) ([]domain.Shop, error){
-	var docs = make([]domain.Shop,0)
-
-	shops, err :=f.GetByScore(c, score, s); if err !=nil {
-		return docs, err
-	}
-	for _, value := range shops{
-		eachShopByScore := value
-		shopsByPrice, err := f.GetByPrice(c, score, eachShopByScore); if err != nil {
-			return docs, err}
-		for _, eachShopByPrice := range shopsByPrice{
-			docs = append(docs, eachShopByPrice)
-		}
-	}
-	return docs, nil
-}
-
-
 func (f Firebase) Update(c context.Context, id string, s domain.Shop) (error){
 	shopCollection := f.client.Collection("Shops")
 
@@ -198,9 +170,8 @@ func (f Firebase) UpdateScore(c context.Context, id string, score float64, s dom
 
 func (f Firebase) UpdatePrice(c context.Context, id string, price float64, s domain.Shop) (error){
 	shopCollection := f.client.Collection("Shops")
-	var p domain.PriceUpdated
 	
-	_, err := shopCollection.Doc(id).Update(c, []firestore.Update{{Path: "price", Value: p.NewPrice}})
+	_, err := shopCollection.Doc(id).Update(c, []firestore.Update{{Path: "price", Value: price}})
 	if err !=nil {
 		return err
 	}
@@ -216,7 +187,7 @@ func (f Firebase) Delete(c context.Context, id string) ( error){
 	return nil
 }
 
-func (f Firebase) ListScores(c context.Context, s domain.Shop) (map[string]float64){
+func (f Firebase) ListScores(c context.Context, s domain.Shop) (map[string]float64, []string){
 	shopCollection := f.client.Collection("Shops")
 	scores := make(map[string]float64)
 
@@ -227,14 +198,14 @@ func (f Firebase) ListScores(c context.Context, s domain.Shop) (map[string]float
 			break
 		}
 		if err != nil{
-			return nil
+			return nil, nil
 		}
 		if err := doc.DataTo(&s); err != nil{
-			return nil
+			return nil, nil
 		}
 		scores[s.Name] = s.Score
 	}
-	return scores
+	return scores, nil
 }
 
 

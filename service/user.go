@@ -46,7 +46,7 @@ func (us UserService) Create(ctx context.Context, u domain.User) (domain.User, e
 func (us UserService) GetID(ctx context.Context, id string, u domain.User)(domain.User, error){
 	user, err := us.repository.GetID(ctx, id, u)
 	if err != nil{
-		return user, err
+		return domain.User{}, err
 	}
 	return user, nil
 }

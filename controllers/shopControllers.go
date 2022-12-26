@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"github.com/gin-gonic/gin"
 	validator "github.com/go-playground/validator/v10"
-	"sort"
 )
 
 type ShopRepository interface {
@@ -19,12 +18,11 @@ type ShopRepository interface {
 	GetByName(context.Context, string, domain.Shop) (domain.Shop, error)
 	GetByScore(context.Context, float64, domain.Shop) ([]domain.Shop, error)
  	GetByPrice(context.Context, float64, domain.Shop) ([]domain.Shop, error)
-	GetByScorePrice(context.Context, float64, float64, domain.Shop) ([]domain.Shop, error)
- 	Update(context.Context, string, domain.Shop) (error)
+	Update(context.Context, string, domain.Shop) (error)
 	UpdateScore(context.Context, string, float64, domain.Shop) (error)
  	UpdatePrice(context.Context, string, float64, domain.Shop) (error)
  	Delete(context.Context, string) (error)
-	ListScores(c context.Context, s domain.Shop) (map[string]float64)
+	ListScores(c context.Context, s domain.Shop) (map[string]float64, []string)
 } 
 
 type ShopController struct{
@@ -41,9 +39,9 @@ func (sc ShopController) CreateShop(c *gin.Context){
 
 	if err := c.ShouldBindJSON(&s); err != nil {
 		if errors.As(err, &ve){
-			out := make([]domain.ErrorMsg, len(ve))
+			out := make([]ErrorMsg, len(ve))
 			for i, fe := range ve{
-				out[i] = domain.ErrorMsg{Field: fe.Field(), Message: domain.GetErrorMsg(fe)}
+				out[i] = ErrorMsg{Field: fe.Field(), Message: GetErrorMsg(fe)}
 			}
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"errors": out})
@@ -58,7 +56,7 @@ func (sc ShopController) CreateShop(c *gin.Context){
 			"erro ao criar dado na struct domain.Shop": err.Error()})
 		return
 	}
-	if shop.Name == ""{//se campo retornou vazio, é pq não foi cadastrado
+	if shop.Name == ""{
 		c.JSON(http.StatusBadRequest, "Loja não foi cadastrada.")
 		return
 	}
@@ -88,7 +86,6 @@ func (sc ShopController) GetByID(c *gin.Context){
 	shop, err := sc.repository.GetByID(c, givenID, s)
 	if err != nil{
 		c.JSON(http.StatusBadRequest, "não encontrado")
-		return
 	}
 	presenterShop := *presenters.PresenterShop(shop)
 	c.JSON(http.StatusOK, presenterShop)
@@ -101,7 +98,6 @@ func (sc ShopController) GetByName(c *gin.Context){
 	shop, err := sc.repository.GetByName(c, name, s)
 	if err != nil{
 		c.JSON(http.StatusBadRequest, "não encontrado")
-		return
 	}
 	presenterShop := *presenters.PresenterShop(shop)
 	c.JSON(http.StatusOK, presenterShop)
@@ -149,32 +145,6 @@ func (sc ShopController) GetByPrice(c *gin.Context){
 	}
 }
 
-func (sc ShopController) GetByScorePrice(c *gin.Context){
-	var s domain.Shop
-
-	score, err:= strconv.ParseFloat(c.Param("score"), 64)
-	if err != nil{
-		c.JSON(http.StatusBadRequest, "erro ao converter para float64")
-	}
-
-	price, err:= strconv.ParseFloat(c.Param("price"), 64)
-	if err != nil{
-		c.JSON(http.StatusBadRequest, "erro ao converter para float64")
-	}
-
-	shops, err := sc.repository.GetByScorePrice(c, score, price, s)
-	if err != nil{
-		c.JSON(http.StatusBadRequest, "não encontrado")
-		return
-	}
-
-	for _, sh := range shops{
-		shop := sh
-		presenterShop := *presenters.PresenterShop(shop)
-		c.JSON(http.StatusOK, presenterShop)
-	}
-}
-
 func (sc ShopController) Update(c *gin.Context){
 	var s domain.Shop
 	var ve validator.ValidationErrors
@@ -182,9 +152,9 @@ func (sc ShopController) Update(c *gin.Context){
 
 	if err := c.ShouldBindJSON(&s); err != nil {
 		if errors.As(err, &ve){
-			out := make([]domain.ErrorMsg, len(ve))
+			out := make([]ErrorMsg, len(ve))
 			for i, fe := range ve{
-				out[i] = domain.ErrorMsg{Field: fe.Field(), Message: domain.GetErrorMsg(fe)}
+				out[i] = ErrorMsg{Field: fe.Field(), Message: GetErrorMsg(fe)}
 			}
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"errors": out})
@@ -245,18 +215,8 @@ func (sc ShopController) Delete(c *gin.Context){
 
 func (sc ShopController) Ranking(c *gin.Context){
 	var s domain.Shop
-	list := sc.repository.ListScores(c, s)
+	_, keys := sc.repository.ListScores(c, s)
 	
-	keys := make([]string, 0, len(list))
-
-	for k := range list{
-		keys = append(keys, k)
-	}
-	
-	sort.SliceStable(keys, func(i, j int) bool{
-		return list[keys[i]] > list[keys[j]]
-	})
-
 	c.JSON(http.StatusOK, keys)
 }
 

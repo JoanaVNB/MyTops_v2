@@ -1,26 +1,28 @@
 package repository
 
 import (
-	"context"
 	"app/domain"
+	"context"
+	"fmt"
 )
 
 type InMemoUserRepository struct{
-	u	map[string]domain.User
+	uMap	map[string]domain.User
 }
 
 func NewInMemoUserRepository() *InMemoUserRepository{
-	return &InMemoUserRepository{u: make(map[string]domain.User)}
+	return &InMemoUserRepository{uMap: make(map[string]domain.User)}
 }
 
 func (in InMemoUserRepository) Create(c context.Context, u domain.User) (domain.User, error){
-	in.u[u.ID] = u
+	in.uMap[u.ID] = u
+	fmt.Println("Criado")
 	return u,  nil
 }
 
-func (in InMemoUserRepository) GetID(ctx context.Context, id string, u domain.User) (domain.User, error){
-	for k, _ := range in.u{
-		gotID := k
+func (in InMemoUserRepository) GetID(c context.Context, id string, u domain.User) (domain.User, error){
+	for _, k := range in.uMap{
+		gotID := k.ID
 		if gotID == id{
 		return u, nil
 		}
@@ -28,3 +30,17 @@ func (in InMemoUserRepository) GetID(ctx context.Context, id string, u domain.Us
 	return u, nil
 }
 
+func (in InMemoUserRepository) Login(c context.Context, u domain.User, l domain.Login) bool{
+	email := l.Email
+	
+	for _, k := range in.uMap{
+		gotEmail := k.Email
+		if gotEmail == email{
+			u = k
+		}
+	}
+	if l.Password == u.Password{
+		return true
+	}
+	return false
+}

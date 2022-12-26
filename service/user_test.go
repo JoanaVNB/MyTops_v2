@@ -3,16 +3,12 @@ package service
 import(
 	"testing"
 	"app/domain"
-	//"app/repository"
 	"context"
-	//"fmt"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
-//_________________________GOMOCK_____________________________//
-
-func TestUserUseCase_CreateUser_GoMockAndTestify(t *testing.T){
+func TestUser_Create(t *testing.T){
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
@@ -36,15 +32,17 @@ func TestUserUseCase_CreateUser_GoMockAndTestify(t *testing.T){
 		Password: "jo123",
 	})
 
+	createdUser.ID = "1"
+
 	assert.Exactly(t, "Joana", createdUser.Name)
 	assert.Exactly(t, "joanavidon@gmail.com", createdUser.Email)
 	assert.Exactly(t, "jo123", createdUser.Password)
+	assert.Exactly(t, "1", createdUser.ID)
 	assert.NotEmpty(t, createdUser.ID)
 	assert.Nil(t, err)
 }
 
-//esta passsando, mas acho que não está certo
-func TestUserUseCase_GetidUser_GoMockAndTestify(t *testing.T){
+func TestUser_GetID(t *testing.T){
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
@@ -52,27 +50,31 @@ func TestUserUseCase_GetidUser_GoMockAndTestify(t *testing.T){
 
 	mockRepository.
 		EXPECT().
-		GetID(gomock.Any(), gomock.Any(), gomock.Any()).
-		Return(domain.User{ID: "2", Name: "Joana", Email: "joanavidon@gmail.com", Password: "jo123"}, nil).
-		Times(1)
+		Create(gomock.Any(), gomock.Any()).
+		Return(domain.User{ Name: "JoaAna", Email: "joanaAvidon@gmail.com", Password: "joA123"}, nil)
 
+	mockRepository.
+		EXPECT().
+		GetID(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(domain.User{ID: "1", Name: "Joana", Email: "joanavidon@gmail.com", Password: "jo123"}, nil)
+	
 	UserServiceMock := NewUserService(mockRepository)
 
-	gotUser,  err := UserServiceMock.GetID(context.Background(), "2", domain.User{
-	ID: "2",
-	Name: "Joana",
-	Email: "joanavidon@gmail.com",
-	Password: "jo123",
-})
+	_, err := UserServiceMock.Create(context.Background(), domain.User{
+		Name: "JoanaA",
+		Email: "joanaAvidon@gmail.com",
+		Password: "joA123",
+	})
+
+	gotUser,  err := UserServiceMock.GetID(context.Background(), "1", domain.User{})
 
 	assert.Nil(t, err)
-	assert.Exactly(t, "2", gotUser.ID)
+	assert.Exactly(t, "1", gotUser.ID)
 	assert.Exactly(t, "Joana", gotUser.Name)
 	assert.Exactly(t, "joanavidon@gmail.com", gotUser.Email)
 }
 
-//ESTÁ ERRADO
-func TestUserUseCase_Login_GoMockAndTestify(t *testing.T){
+func TestUser_Login(t *testing.T){
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
@@ -86,7 +88,7 @@ func TestUserUseCase_Login_GoMockAndTestify(t *testing.T){
 
 	UserServiceMock := NewUserService(mockRepository)
 
-	UserServiceMock.Login(context.Background(), 
+	result := UserServiceMock.Login(context.Background(), 
 	domain.User{
 		Email: "joanavidon@gmail.com",
 		Password: "jo123",
@@ -96,5 +98,5 @@ func TestUserUseCase_Login_GoMockAndTestify(t *testing.T){
 		Password: "jo1234",
 		})
 
-	//assert.Exactly(t, true, loginUser)
+	assert.Exactly(t, false, result)
 }

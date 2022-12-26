@@ -1,5 +1,4 @@
 package controllers
-
 import (
 	"app/domain"
 	"context"
@@ -30,9 +29,9 @@ func (uc UserController) Create(c *gin.Context) {
 	
 	if err := c.ShouldBindJSON(&u); err != nil {
 		if errors.As(err, &ve) {
-			out := make([]domain.ErrorMsg, len(ve))
+			out := make([]ErrorMsg, len(ve))
 			for i, fe := range ve {
-				out[i] = domain.ErrorMsg{Field: fe.Field(), Message: domain.GetErrorMsg(fe)}
+				out[i] = ErrorMsg{Field: fe.Field(), Message: GetErrorMsg(fe)}
 			}
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"errors": out})
@@ -46,7 +45,7 @@ func (uc UserController) Create(c *gin.Context) {
 			"erro ao criar dado na struct domain.User": err.Error()})
 		return
 	}
-	if user.Name == ""{//se campo retornou vazio, é pq não foi cadastrado
+	if user.Name == ""{//o user não foi cadastrado caso o campo retornar vazio, é pq não foi cadastrado
 		c.JSON(http.StatusBadRequest, "Usuário não foi cadastrado.")
 		return
 	}
