@@ -3,7 +3,6 @@ package repository
 import (
 	"app/domain"
 	"context"
-	"fmt"
 )
 
 type InMemoShopRepository struct{

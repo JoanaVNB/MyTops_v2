@@ -5,7 +5,7 @@ import(
 	"context"
 	"cloud.google.com/go/firestore"
 	"log"
-	"app/repository/Firebase"
+	repository "app/repository/Firebase"
 	"app/controllers"
 	"app/service"
 	"github.com/gin-gonic/gin"
@@ -14,7 +14,7 @@ import(
 func main(){
 
 //Conectando User ao Firebase
-	_ = os.Setenv("FIRESTORE_EMULATOR_HOST", "localhost:9090")
+	_ = os.Setenv("FIRESTORE_EMULATOR_HOST", "firestore:9090")
 
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, "desafio-c0479")
