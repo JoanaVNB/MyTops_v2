@@ -3,6 +3,7 @@ package repository
 import (
 	"app/domain"
 	"context"
+	"errors"
 )
 
 type InMemoShopRepository struct{
@@ -70,19 +71,31 @@ func (in InMemoShopRepository) GetByPrice(c context.Context, price float64, s do
 }
 
 func (in InMemoShopRepository) Update(c context.Context, id string, s domain.Shop) (error){
-	in.sMap[id] = s
+	if _, ok := in.sMap[id]; ok {
+		in.sMap[id] = s
+	} else {
+		return errors.New("não encontrado")
+	}
 	return nil
 }
 
 func (in InMemoShopRepository) UpdateScore(c context.Context, id string, score float64, s domain.Shop) (error){
-	s = domain.Shop{Score: score}
-	in.sMap[id] = s
+	if _, ok := in.sMap[id]; ok {
+		s = domain.Shop{Score: score}
+		in.sMap[id] = s
+	}else {
+		return errors.New("não encontrado")
+	}
 	return nil
 }
 
 func (in InMemoShopRepository) UpdatePrice(c context.Context, id string, price float64, s domain.Shop) (error){
-	s = domain.Shop{Price: price}
-	in.sMap[id] = s
+	if _, ok := in.sMap[id]; ok {
+		s = domain.Shop{Price: price}
+		in.sMap[id] = s
+	}else {
+		return errors.New("não encontrado")
+	}
 	return nil
 }
 
