@@ -2,7 +2,7 @@
 
 Avaliação de pizzarias online. Cadastre com nome, sabores, preço, link para pedidos e avalie com nota e se é uma das suas pizzarias favoritas. Desta forma, poderá ter um app com todos os dados das pizzarias que provou.
 
-Inicie com o comando: `docker-compose up' .
+Inicie com o comando: `docker-compose up` .
 
 **criado para fins didáticos**
 
