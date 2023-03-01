@@ -4,7 +4,8 @@ Avaliação de pizzarias online. Cadastre com nome, sabores, preço, link para p
 
 Inicie com o comando: `docker-compose up` .
 
-**criado para fins didáticos**
+
+**Criado para fins didáticos.**
 
 
 ## Abaixo segue minha visão do clean archicteture:
