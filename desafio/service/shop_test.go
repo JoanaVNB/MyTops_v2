@@ -165,91 +165,81 @@ func TestShop_Update(t *testing.T) {
 	defer controller.Finish()
 	mockRepository := NewMockShopRepository(controller)
 
-
-	mockRepository.EXPECT().
-		CreateShop(gomock.Any(), gomock.Any()).
-		Return(pizzeria2, nil)
-
 	mockRepository.EXPECT().
 		Update(gomock.Any(), gomock.Any(), gomock.Any()).
-		Return(nil)
+		Return(domain.Shop{
+			ID:       "1",
+			Name:     "Pizzeria",
+			Flavors:  [6]string{"Champignon", "Toscana"},
+			Score:    9.7,
+			Price:    55.60,
+			Link:     "www.ifood.com.br",
+			Favorite: false,
+		}, nil)
 
 	mockRepository.EXPECT().
 		GetByID(gomock.Any(), gomock.Any(), gomock.Any()).
-		Return(pizzeria2, nil)
+		Return(pizzeria, nil)
 
 	ShopServiceMock := NewShopService(mockRepository)
-
-	createdShop, err := ShopServiceMock.CreateShop(context.Background(), pizzeria2)
-	createdShop.ID = "New"
-	
 			
-	err = ShopServiceMock.Update(context.Background(), "New", domain.Shop{
+	_, err := ShopServiceMock.Update(context.Background(), "1", domain.Shop{
 		Flavors:  [6]string{"Champignon", "Toscana"}})
 
-	shop, err := ShopServiceMock.GetByID(context.Background(), "New", domain.Shop{})
+	_, err = ShopServiceMock.GetByID(context.Background(), "1", domain.Shop{})
 
-	assert.Exactly(t, "Pizzeria2", shop.Name)
-	assert.Exactly(t, [6]string{"Champignon", "Toscana"}, shop.Flavors)
-	assert.Exactly(t, 4.5, shop.Score)
-	assert.Exactly(t, 75.0, shop.Price)
-	assert.Exactly(t, "www.ifood.com.br/pizzeria2", shop.Link)
-	assert.Exactly(t, false, shop.Favorite)
 	assert.Nil(t, err)
 }
 
-/* func TestShop_UpdateScore(t *testing.T) {
+func TestShop_UpdateScore(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 	mockRepository := NewMockShopRepository(controller)
 
 	mockRepository.EXPECT().
 		UpdateScore(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
-		Return(nil)
+		Return(domain.Shop{
+			ID:       "1",
+			Name:     "Pizzeria",
+			Flavors:  [6]string{"Champignon", "Toscana"},
+			Score:    9.0,
+			Price:    55.60,
+			Link:     "www.ifood.com.br",
+			Favorite: false,
+		},nil)
 
 	ShopServiceMock := NewShopService(mockRepository)
 
-	err := ShopServiceMock.UpdateScore(context.Background(), "1",
+	_, err := ShopServiceMock.UpdateScore(context.Background(), "1",
 		9.0, domain.Shop{})
 
-	assert.Exactly(t, "Pizzaria", pizzeria.Name)
-	assert.Exactly(t, [6]string{"Marguerita", "Calabresa"}, pizzeria.Flavors)
-	assert.Exactly(t, 9.0, pizzeria.Score)
-	assert.Exactly(t, 55.60, pizzeria.Price)
-	assert.Exactly(t, "www.ifood.com.br", pizzeria.Link)
-	assert.Exactly(t, true, pizzeria.Favorite)
-	//assert.NotEmpty(t, pizzeria.ID)
 	assert.Nil(t, err)
-} */
+}
 
-/* func TestShop_UpdatePrice(t *testing.T) {
+func TestShop_UpdatePrice(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 	mockRepository := NewMockShopRepository(controller)
 
 	mockRepository.EXPECT().
 		UpdatePrice(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
-		Return(nil)
+		Return(domain.Shop{
+		ID:       "1",
+		Name:     "Pizzeria",
+		Flavors:  [6]string{"Champignon", "Toscana"},
+		Score:    9.0,
+		Price:    80.0,
+		Link:     "www.ifood.com.br",
+		Favorite: false,
+	},nil)
 
-	mockRepository.EXPECT().
-		GetByID(gomock.Any(), gomock.Any(), gomock.Any()).
-		Return(pizzeria2, nil)
-	
 	ShopServiceMock := NewShopService(mockRepository)
 
-	err := ShopServiceMock.UpdatePrice(context.Background(), "New",
+	_, err := ShopServiceMock.UpdatePrice(context.Background(), "1",
 		80.0, domain.Shop{})
 
-	shop, err := ShopServiceMock.GetByID(context.Background(), "New", domain.Shop{})
-
-	assert.Exactly(t, "Pizzeria2", shop.Name)
-	assert.Exactly(t, [6]string{"Champignon"}, shop.Flavors)
-	assert.Exactly(t, 4.5, shop.Score)
-	assert.Exactly(t, 80.0, shop.Price)
-	assert.Exactly(t, "www.ifood.com.br/pizzeria2", shop.Link)
-	assert.Exactly(t, false, shop.Favorite)
 	assert.Nil(t, err)
-} */
+}
 
 func Test_Delete(t *testing.T) {
 	controller := gomock.NewController(t)

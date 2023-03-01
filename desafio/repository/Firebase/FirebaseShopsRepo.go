@@ -142,40 +142,39 @@ func (f Firebase) GetByPrice(c context.Context, price float64, s domain.Shop) ([
 	return docs, nil
 }
 
-func (f Firebase) Update(c context.Context, id string, s domain.Shop) (error){
+func (f Firebase) Update(c context.Context, id string, s domain.Shop) (domain.Shop, error){
 	shopCollection := f.client.Collection("Shops")
 
 	doc, err := shopCollection.Doc(id).Get(c)
 	if err != nil{
-		return err
+		return domain.Shop{}, err
 	}
-	/* s.ID = uuid.NewString() */
 	s.ID = doc.Ref.ID
 	_, err = shopCollection.Doc(id).Set(c, s)
 	if err != nil{
-		return  err
+		return domain.Shop{}, err
 	}
-	return nil
+	return s, nil
 }
 	
-func (f Firebase) UpdateScore(c context.Context, id string, score float64, s domain.Shop) (error){
+func (f Firebase) UpdateScore(c context.Context, id string, score float64, s domain.Shop) (domain.Shop, error){
 	shopCollection := f.client.Collection("Shops")
 
 	_, err := shopCollection.Doc(id).Update(c, []firestore.Update{{Path: "score", Value: score}})
 	if err !=nil {
-		return err
+		return domain.Shop{}, err
 	}
-	return nil
+	return s, nil
 }
 
-func (f Firebase) UpdatePrice(c context.Context, id string, price float64, s domain.Shop) (error){
+func (f Firebase) UpdatePrice(c context.Context, id string, price float64, s domain.Shop) (domain.Shop, error){
 	shopCollection := f.client.Collection("Shops")
 	
 	_, err := shopCollection.Doc(id).Update(c, []firestore.Update{{Path: "price", Value: price}})
 	if err !=nil {
-		return err
+		return domain.Shop{}, err
 	}
-	return nil
+	return s, nil
 }
 	
 func (f Firebase) Delete(c context.Context, id string) ( error){

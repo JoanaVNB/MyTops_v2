@@ -3,7 +3,7 @@ package controllers
 import (
 	"app/domain"
 	"app/presenters"
-	"context"
+	"app/service"
 	"errors"
 	"net/http"
 	"strconv"
@@ -11,25 +11,11 @@ import (
 	validator "github.com/go-playground/validator/v10"
 )
 
-type ShopRepository interface {
-	CreateShop(context.Context, domain.Shop) (domain.Shop, error)
-	GetAll(context.Context, domain.Shop) ([]domain.Shop, error)
-	GetByID(context.Context, string, domain.Shop) (domain.Shop, error)
-	GetByName(context.Context, string, domain.Shop) (domain.Shop, error)
-	GetByScore(context.Context, float64, domain.Shop) ([]domain.Shop, error)
- 	GetByPrice(context.Context, float64, domain.Shop) ([]domain.Shop, error)
-	Update(context.Context, string, domain.Shop) (error)
-	UpdateScore(context.Context, string, float64, domain.Shop) (error)
- 	UpdatePrice(context.Context, string, float64, domain.Shop) (error)
- 	Delete(context.Context, string) (error)
-	ListScores(c context.Context, s domain.Shop) (map[string]float64, []string)
-} 
-
 type ShopController struct{
-	repository ShopRepository
+	repository service.ShopRepository
 }
 
-func NewShopController(repository ShopRepository) *ShopController{
+func NewShopController(repository service.ShopRepository) *ShopController{
 	return &ShopController{repository: repository}
 }
 
@@ -162,7 +148,7 @@ func (sc ShopController) Update(c *gin.Context){
 		return 
 	}
 
-	err := sc.repository.Update(c, givenID, s)
+	_, err := sc.repository.Update(c, givenID, s)
 	if err != nil{
 		c.JSON(http.StatusBadRequest, "não encontrado")
 		return

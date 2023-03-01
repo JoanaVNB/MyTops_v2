@@ -15,9 +15,9 @@ type ShopRepository interface {
 	GetByName(context.Context, string, domain.Shop) (domain.Shop, error)
 	GetByScore(context.Context, float64, domain.Shop) ([]domain.Shop, error)
 	GetByPrice(context.Context, float64, domain.Shop) ([]domain.Shop, error)
-	Update(context.Context, string, domain.Shop) (error)
-	UpdateScore(context.Context, string, float64, domain.Shop) (error)
-	UpdatePrice(context.Context, string, float64, domain.Shop) (error)
+	Update(context.Context, string, domain.Shop) (domain.Shop, error)
+	UpdateScore(context.Context, string, float64, domain.Shop) (domain.Shop, error)
+	UpdatePrice(context.Context, string, float64, domain.Shop) (domain.Shop, error)
 	Delete(context.Context, string) (error)
 	ListScores(context.Context, domain.Shop) (map[string]float64, []string)
 } 
@@ -91,28 +91,28 @@ func (ss ShopService) GetByPrice(c context.Context, price float64, s domain.Shop
 	return shops, nil
 }
 
-func (ss ShopService) Update(c context.Context, id string, s domain.Shop) (error){
-	err := ss.repository.Update(c, id, s)
+func (ss ShopService) Update(c context.Context, id string, s domain.Shop) (domain.Shop, error){
+	shops, err := ss.repository.Update(c, id, s)
 	if err != nil{
-		return  err
+		return shops, err
 	}
-	return nil
+	return domain.Shop{}, nil
 }
 	
-func (ss ShopService) UpdateScore(c context.Context, id string, score float64, s domain.Shop) (error){
-	err := ss.repository.UpdateScore(c, id, score, s)
+func (ss ShopService) UpdateScore(c context.Context, id string, score float64, s domain.Shop) (domain.Shop, error){
+	shops, err := ss.repository.UpdateScore(c, id, score, s)
 	if err != nil{
-		return err
+		return shops, err
 	}
-	return nil
+	return domain.Shop{}, nil
 }
 
-func (ss ShopService) UpdatePrice(c context.Context, id string, price float64, s domain.Shop) (error){
-	err := ss.repository.UpdatePrice(c, id, price, s)
+func (ss ShopService) UpdatePrice(c context.Context, id string, price float64, s domain.Shop) (domain.Shop, error){
+	shops, err := ss.repository.UpdatePrice(c, id, price, s)
 	if err != nil{
-		return err
+		return shops, err
 	}
-	return nil
+	return domain.Shop{}, nil
 }
 	
 func (ss ShopService) Delete(c context.Context, id string) (error){

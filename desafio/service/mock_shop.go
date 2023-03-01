@@ -139,21 +139,6 @@ func (mr *MockShopRepositoryMockRecorder) GetByScore(arg0, arg1, arg2 interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByScore", reflect.TypeOf((*MockShopRepository)(nil).GetByScore), arg0, arg1, arg2)
 }
 
-// GetByScorePrice mocks base method.
-func (m *MockShopRepository) GetByScorePrice(arg0 context.Context, arg1, arg2 float64, arg3 domain.Shop) ([]domain.Shop, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByScorePrice", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].([]domain.Shop)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetByScorePrice indicates an expected call of GetByScorePrice.
-func (mr *MockShopRepositoryMockRecorder) GetByScorePrice(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByScorePrice", reflect.TypeOf((*MockShopRepository)(nil).GetByScorePrice), arg0, arg1, arg2, arg3)
-}
-
 // ListScores mocks base method.
 func (m *MockShopRepository) ListScores(arg0 context.Context, arg1 domain.Shop) (map[string]float64, []string) {
 	m.ctrl.T.Helper()
@@ -170,11 +155,12 @@ func (mr *MockShopRepositoryMockRecorder) ListScores(arg0, arg1 interface{}) *go
 }
 
 // Update mocks base method.
-func (m *MockShopRepository) Update(arg0 context.Context, arg1 string, arg2 domain.Shop) error {
+func (m *MockShopRepository) Update(arg0 context.Context, arg1 string, arg2 domain.Shop) (domain.Shop, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", arg0, arg1, arg2)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(domain.Shop)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Update indicates an expected call of Update.
@@ -184,11 +170,12 @@ func (mr *MockShopRepositoryMockRecorder) Update(arg0, arg1, arg2 interface{}) *
 }
 
 // UpdatePrice mocks base method.
-func (m *MockShopRepository) UpdatePrice(arg0 context.Context, arg1 string, arg2 float64, arg3 domain.Shop) error {
+func (m *MockShopRepository) UpdatePrice(arg0 context.Context, arg1 string, arg2 float64, arg3 domain.Shop) (domain.Shop, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdatePrice", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(domain.Shop)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // UpdatePrice indicates an expected call of UpdatePrice.
@@ -198,11 +185,12 @@ func (mr *MockShopRepositoryMockRecorder) UpdatePrice(arg0, arg1, arg2, arg3 int
 }
 
 // UpdateScore mocks base method.
-func (m *MockShopRepository) UpdateScore(arg0 context.Context, arg1 string, arg2 float64, arg3 domain.Shop) error {
+func (m *MockShopRepository) UpdateScore(arg0 context.Context, arg1 string, arg2 float64, arg3 domain.Shop) (domain.Shop, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateScore", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(domain.Shop)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // UpdateScore indicates an expected call of UpdateScore.
