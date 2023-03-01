@@ -159,9 +159,9 @@ func (sc ShopController) Update(c *gin.Context){
 func (sc ShopController) UpdateScore(c *gin.Context){
 	var s domain.Shop
 	givenID := c.Params.ByName("id")
-	score, err:= strconv.ParseFloat(c.Param("score"), 64)
+	score, _ := strconv.ParseFloat(c.Param("score"), 64)
 
-	err = sc.repository.UpdateScore(c, givenID, score, s)
+	_, err := sc.repository.UpdateScore(c, givenID, score, s)
 	if err != nil{
 		c.JSON(http.StatusBadRequest, "não encontrado")
 		return
@@ -180,7 +180,7 @@ func (sc ShopController) UpdatePrice(c *gin.Context){
 		return
 	}
 
-	err := sc.repository.UpdatePrice(c, givenID, p.NewPrice, s)
+	_, err := sc.repository.UpdatePrice(c, givenID, p.NewPrice, s)
 	if err != nil{
 		c.JSON(http.StatusBadRequest, "não encontrado")
 		return

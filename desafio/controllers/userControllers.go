@@ -76,10 +76,10 @@ func (uc UserController) Login(c *gin.Context){
 	}
 	
 	bol := uc.repository.Login(c, u, l)
-	if bol == true{
+	if bol{
 		c.JSON(http.StatusAccepted,  "Usuário autorizado")
 	}
-	if bol == false{
+	if !bol{
 		c.JSON(http.StatusBadRequest, "Senha incorreta")	
 	}
 }
